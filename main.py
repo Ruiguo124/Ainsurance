@@ -90,7 +90,7 @@ def vggModel(input_shape,num_classes):
     return topLayerModel
     
     
-def shittyModel(input_shape,num_classes):
+def notShittyModel(input_shape,num_classes):
     model = Sequential()
     # model.add(tf.layers.Conv2D(128, (3, 3), activation='relu', input_shape=input_shape))
     # model.add(tf.layers.MaxPooling2D(pool_size=(2,2), strides=(2, 2)))
