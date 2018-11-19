@@ -1,5 +1,5 @@
 # Ainsurance: Project for McGill's 2018 Code Jam Hackathon. 
-# Won first place for Computer Vision!
+# Won first place for Computer Vision!!!
 
 Inspiration
 It has been proved by various research papers that depression and sadness can take its toll on someone's physical health. Not only does it increase your chances of getting sick, it can also reduce your lifespan by up to 10 years. _ (Canadian Medical Association Journal: http://www.cmaj.ca/content/189/42/E1304)_
