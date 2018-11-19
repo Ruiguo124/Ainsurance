@@ -51,6 +51,7 @@ def dataset(res,num):
     y_train = np.array(y_train,'float32')
     x_test = np.array(x_test,'float32')
     y_test = np.array(y_test,'float32')
+    #normalising the data
     x_train /= 255
     x_test /= 255
     np.save("x_train",x_train)
@@ -59,7 +60,7 @@ def dataset(res,num):
     np.save("y_test",y_test)
 
     return (x_train,y_train,x_test,y_test)
-def evenShittierModel(input_shape, num_classes):
+def CNN_model2(input_shape, num_classes):
     model = Sequential()
     model.add(Conv2D(input_shape=input_shape, filters=96, kernel_size=(3,3)))
     model.add(Activation('relu'))
@@ -90,30 +91,21 @@ def vggModel(input_shape,num_classes):
     return topLayerModel
     
     
-def notShittyModel(input_shape,num_classes):
+def CNN_model1(input_shape,num_classes):
+    #3 layers model
     model = Sequential()
-    # model.add(tf.layers.Conv2D(128, (3, 3), activation='relu', input_shape=input_shape))
-    # model.add(tf.layers.MaxPooling2D(pool_size=(2,2), strides=(2, 2)))
-    # #2nd convolution layer
-    # model.add(tf.layers.Conv2D(128, (3, 3), activation='relu'))
-    # model.add(tf.layers.MaxPooling2D(pool_size=(2,2), strides=(2, 2)))
-    
-    # #3rd convolution layer
-    # model.add(tf.layers.Conv2D(128, (3, 3), activation='relu'))
-    # model.add(tf.layers.MaxPooling2D(pool_size=(2,2), strides=(2, 2)))
-
-    # model.add(tf.layers.Flatten())
-
-    # #fully connected neural networks
-    # model.add(tf.layers.Dense(64))
-    # model.add(tf.layers.Dense(num_classes, activation='softmax'))
+    #layer 1
     model.add(Conv2D(64, (5,5),input_shape=input_shape, activation = 'relu'))
     model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+    #layer 2
+    model.add(Conv2D(128, (3,3),activation = 'relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
     
+    #layer 3
     model.add(Conv2D(128, (3,3),activation = 'relu'))
     model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
-    model.add(Conv2D(128, (3,3),activation = 'relu'))
-    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+    
+    
     model.add(Flatten())
     model.add(Dense(units=100, activation='relu'  ))
     model.add(Dropout(0.1))
@@ -123,17 +115,9 @@ def notShittyModel(input_shape,num_classes):
     
     return model
     
-def train(model,x,y,x_test,y_test):
-    #model.compile(optimizer='adam',
-    #loss='categorical_crossentropy', 
-    #metrics=['accuracy'])
+def compile_model(model,x,y,x_test,y_test):
     
-    ####
-    #gen = ImageDataGenerator()
-    #train_generator = gen.flow(x_train, y_train, batch_size=batch_size)
-    #rms = RMSprop()
-    #sgd = SGD(lr=0.001, decay=1e-6, momentum=0.5, nesterov=True)
-    #####
+    #compile the model with preset parameters
     model.compile(loss='categorical_crossentropy', optimizer='adam' ,metrics=["accuracy"])
     
 
@@ -142,11 +126,13 @@ def train(model,x,y,x_test,y_test):
     
 
 if __name__ == "__main__":
-    
+    #number of pictures to process at once by the model while training 
     batch_size = 156
+    #number of labels (7 emotions)
     num_classes = 7
     IMG_SIZE = 48
     filename = "fer2013.csv"
+    #if the csv array is not present call the method to read the csv otherwise load it
     if os.path.isfile("res.npy"):
         print("file found")
         res = np.load("res.npy")
@@ -154,8 +140,9 @@ if __name__ == "__main__":
     else:
         res=readCsv(filename)
 
+    #initialisation of the data arrays
     x_train, y_train, x_test, y_test = [],[],[],[]
-    
+    #if the data arrays are present load them, otherwise call the dataset method
     if os.path.isfile("x_train.npy"):
         print("datasets found")
         x_train = np.load("x_train.npy")
@@ -169,26 +156,31 @@ if __name__ == "__main__":
         print("sa")
         x_train,y_train,x_test,y_test = dataset(res,num_classes)
 
-    print(type(x_train))
+    
+    #reshape the pictures array to get a rank 4 array (length, 48, 48, 1)
     x_train = x_train.reshape(x_train.shape[0],IMG_SIZE,IMG_SIZE,1)
     x_test = x_test.reshape(x_test.shape[0],IMG_SIZE,IMG_SIZE,1)
     x_train = x_train.astype('float32')
     x_test = x_test.astype('float32')
-    print(x_train.shape)
-    print(y_train)
-    print(x_test,y_test)
-
-    model = evenShittierModel((48,48,1),num_classes)
-    
-    train(model,x_train,y_train,x_test,y_test)
     
 
+    #info on the data
     
+    print("pictures array : ",x_train.shape,type(x_train))
+    print("shape of the labels array",y_train.shape,type(y_train))
+
+    #load the model (convolutional neural network 3 layers)
+    model = CNN_model1((48,48,1),num_classes)
+    #compiling the model
+    compile_model(model,x_train,y_train,x_test,y_test)
+    
+
+    #save the model
     if os.path.isfile('fer.h5'):
         model.load_model('fer.h5') #load weights
-
+    #train the model, the save it
     else:
-        model.fit(x_train, y_train, batch_size=batch_size, validation_data=(x_train,y_train),epochs=3)
+        model.fit(x_train, y_train, batch_size=batch_size, validation_data=(x_train,y_train),epochs=15)
         model.save('fer.h5')
         
         

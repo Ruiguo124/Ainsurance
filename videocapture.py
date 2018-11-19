@@ -4,19 +4,20 @@ import numpy as np
 from tensorflow.keras.preprocessing import image
 import time
 import os
-
+#labels
 emotion = {0:'Angry',1:'Disgust', 2:'Fear', 3 :'Happy',4:'Sad',5:'Surprise',6:'Neutral'}
+#our saved model
 model = tf.keras.models.load_model('fer.h5')
 max_index=0
 IMG_SIZE = 48
 depressionRate = 0
 depressionRateNeutral = 0
+#face detection algorithm
 face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
-#mixer.init()
-#mixer.music.load('darkness.mp3')
-
+start = 0
+end = 0
 cap = cv2.VideoCapture(0)
-baseMoney = 250
+baseMoney = 500
 frameCount = 0
 frameSad = 0
 frameNeutral = 0
@@ -52,37 +53,39 @@ while(True):
 		
 		
         cv2.putText(frame, emotion[int(max_index)], (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2)
-        
+    
     if emotion[int(max_index)]== 'Sad' or emotion[int(max_index)] == 'Fear' or emotion[int(max_index)]== 'Angry':
         frameSad = frameSad+1
 
     if emotion[int(max_index)]== 'Neutral':
+        start = time.time()
         frameNeutral = frameNeutral+1
-        
-    if baseMoney > 1000:
-        os.system('mpg123 darkness.mp3')
-        
+    
+    
+
     
     if frameCount > 0:
         depressionRateSad = (frameSad/frameCount) * 100
     if frameCount > 0:
         depressionRateNeutral = (frameNeutral/frameCount)*100
         print(depressionRateNeutral)
-    if depressionRate > 25:
+    if emotion[int(max_index)]== 'Sad':
         #mixer.music.play()
-        baseMoney  = baseMoney + (baseMoney * 0.05)/60
+        baseMoney  = baseMoney + (baseMoney * 0.5)/60
             
     
-    if depressionRateNeutral > 30:
-        baseMoney  = baseMoney + (baseMoney * 0.0001)/60
-            
+    if emotion[int(max_index)]== 'Neutral':
+        baseMoney  = baseMoney + (baseMoney * 0.01)/100
+    elif emotion[int(max_index)]== 'Happy':
+        baseMoney  = baseMoney - (baseMoney * 0.1)/60
     text = "Insurance price : " + str(baseMoney)
     cv2.putText(frame, text, (50, 35), cv2.FONT_HERSHEY_SIMPLEX, 1, (200,200,10), 2)
     
     cv2.imshow('frame',frame)
+    #press q to quit
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-# When everything done, release the capture
+
 cap.release()
 cv2.destroyAllWindows()
