@@ -1,6 +1,25 @@
 # Ainsurance: Project for McGill's 2018 Code Jam Hackathon. 
 # Won first place for Computer Vision!!!
 
+## Usage:
+The model is already trained and saved in the fer.h5. 
+
+If you want to train your own model you firstly need to download the facial expression recognition dataset from kaggle [here](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data)
+
+Must need python 3.6, tensorflow and opencv3
+
+To compile and fit the model
+
+```console
+./main.py --batch-size=<nb> --epochs=<nb>
+```
+  
+To run the live video feed facial expression recognition
+```console
+./videocapture --filname='model_filename.extension'
+```
+
+
 ## Inspiration: 
 
 It has been proved by various research papers that depression and sadness can take its toll on someone's physical health. Not only does it increase your chances of getting sick, it can also reduce your lifespan by up to 10 years. _ (Canadian Medical Association Journal: http://www.cmaj.ca/content/189/42/E1304)_
