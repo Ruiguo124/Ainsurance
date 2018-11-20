@@ -1,5 +1,6 @@
 # Ainsurance: Project for McGill's 2018 Code Jam Hackathon. 
 # Won first place for Computer Vision!!!
+![image_test](https://github.com/Ruiguo124/Ainsurance/blob/master/gallery.jpg)
 
 ## Usage:
 The model is already trained and saved in the fer.h5. 
