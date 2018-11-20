@@ -16,7 +16,7 @@ To compile and fit the model
   
 To run the live video feed facial expression recognition
 ```console
-./videocapture --filname='model_filename.extension'
+./videocapture --filname=<model_filename.extension>
 ```
 
 
