@@ -38,3 +38,6 @@ AInsurance helps you gather the data and process it in a way you never knew you 
 We have implemented a multiple-layer convolutional neural network which detects someone's emotion in real time via video feed and uses a basic algorithm to calculate insurance price using the insurance interview video. We then feed 30 thousand 48x48 pixels pictures through the network for 15 epochs. The model returns approximately 68% accuracy. A total of 7 emotions can be detected (Sad, Happy, Angry, Disgust, Fear, Neutral and Surprised)
 
 We used: Python Tensorflow Opencv-python Keras
+
+## Devpost: 
+https://devpost.com/software/real-time-insurance-calculator-ai
