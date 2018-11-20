@@ -135,7 +135,7 @@ if __name__ == "__main__":
     args = parser.parse_args() 
     batch_size = args.batch_size
     epochs = args.epochs
-    
+    print(batch_size,epochs)
     #number of labels (7 emotions)
     num_classes = 7
     IMG_SIZE = 48

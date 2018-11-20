@@ -5,10 +5,23 @@ import numpy as np
 from tensorflow.keras.preprocessing import image
 import time
 import os
+import argparse
+
+#arguments 
+parser = argparse.ArgumentParser(description='Model parameters')
+parser.add_argument('-f','--filename',help="model file name",default="fer.h5")
+args = parser.parse_args()
+filename = args.filename
 #labels
 emotion = {0:'Angry',1:'Disgust', 2:'Fear', 3 :'Happy',4:'Sad',5:'Surprise',6:'Neutral'}
 #our saved model
-model = tf.keras.models.load_model('fer.h5')
+try:
+    model = tf.keras.models.load_model(filename)
+except OSError as e: 
+    print(e)
+    exit()
+    
+    
 max_index=0
 IMG_SIZE = 48
 depressionRate = 0
@@ -31,7 +44,7 @@ while(True):
     faces = face_cascade.detectMultiScale(gray, 1.3, 5)
     
     faces = np.asarray(faces)
-    print(faces)
+    
     for (x,y,w,h) in faces:
         cv2.rectangle(frame,(x,y),(x+w,y+h),(255,0,0),2)
         
@@ -69,7 +82,7 @@ while(True):
         depressionRateSad = (frameSad/frameCount) * 100
     if frameCount > 0:
         depressionRateNeutral = (frameNeutral/frameCount)*100
-        print(depressionRateNeutral)
+        
     if emotion[int(max_index)]== 'Sad':
         #mixer.music.play()
         baseMoney  = baseMoney + (baseMoney * 0.5)/60
