@@ -1,8 +1,10 @@
+#!/usr/bin/python3.6
 import tensorflow as tf
 import numpy as np
-import matplotlib.pyplot as plt
 import pandas
-import os.path
+import os
+import argparse
+import sys
 import cv2
 from PIL import Image
 import PIL
@@ -126,11 +128,18 @@ def compile_model(model,x,y,x_test,y_test):
     
 
 if __name__ == "__main__":
-    #number of pictures to process at once by the model while training 
-    batch_size = 156
+    #args
+    parser = argparse.ArgumentParser(description='Model parameters')
+    parser.add_argument('-b','--batch-size',help="Number of batch size",default="128")
+    parser.add_argument('-e','--epochs',help="Number of epochs",default="15")
+    args = parser.parse_args() 
+    batch_size = args.batch_size
+    epochs = args.epochs
+    
     #number of labels (7 emotions)
     num_classes = 7
     IMG_SIZE = 48
+    
     filename = "fer2013.csv"
     #if the csv array is not present call the method to read the csv otherwise load it
     if os.path.isfile("res.npy"):
@@ -138,8 +147,11 @@ if __name__ == "__main__":
         res = np.load("res.npy")
         print(type(res))
     else:
+        
+        print("reading csv../")
         res=readCsv(filename)
 
+    
     #initialisation of the data arrays
     x_train, y_train, x_test, y_test = [],[],[],[]
     #if the data arrays are present load them, otherwise call the dataset method
@@ -180,7 +192,7 @@ if __name__ == "__main__":
         model.load_model('fer.h5') #load weights
     #train the model, the save it
     else:
-        model.fit(x_train, y_train, batch_size=batch_size, validation_data=(x_train,y_train),epochs=15)
+        model.fit(x_train, y_train, batch_size=batch_size, validation_data=(x_train,y_train),epochs=epochs)
         model.save('fer.h5')
         
         
